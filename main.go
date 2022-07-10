@@ -1,29 +1,41 @@
 package main
 
 import (
-    "fmt"
-    "github.com/eiannone/keyboard"
+    "time"
+    "github.com/MarinX/keylogger"
+    "github.com/sirupsen/logrus"
+    "github.com/paulbellamy/ratecounter"
 )
 
 func main() {
-    keysEvents, err := keyboard.GetKeys(10)
-    if err != nil {
-        panic(err)
-    }
-    defer func() {
-        _ = keyboard.Close()
-    }()
 
-    fmt.Println("Press ESC to quit")
-    for {
-        event := <-keysEvents
-        if event.Err != nil {
-            panic(event.Err)
-        }
-        fmt.Printf("You pressed: rune %q, key %X\r\n", event.Rune, event.Key)
-        if event.Key == keyboard.KeyEsc {
+    keyboard := keylogger.FindKeyboardDevice()
+
+    logrus.Println("Found a keyboard at", keyboard)
+    k, err := keylogger.New(keyboard)
+    if err != nil {
+        logrus.Error(err)
+        return
+    }
+    defer k.Close()
+
+    var apm float64
+
+    events := k.Read()
+    counter := ratecounter.NewRateCounter(15 * time.Second)
+
+    for e := range events {
+        switch e.Type {
+
+        case keylogger.EvKey:
+
+            if e.KeyPress() {
+                counter.Incr(1)
+                apm = float64(counter.Rate()) * 4
+                logrus.Println("APM", apm)
+            }
+
             break
         }
     }
 }
-
