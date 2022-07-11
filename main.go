@@ -23,11 +23,12 @@ func main() {
     var apm float64
 
     events := k.Read()
-    counter := ratecounter.NewRateCounter(12 * time.Second)
+    counter := ratecounter.NewRateCounter(10 * time.Second)
     wallpaperApp := "feh"
-    argScale := "--bg-scale"
-    wallpaper1 := "~/Projects/lethani/wallpapers/1.jpg"
-    wallpaper2 := "~/Projects/lethani/wallpapers/2.jpg"
+    argCenter := "--bg-center"
+    argOneScreen := "--no-xinerama"
+    argColor := "--image-bg"
+    pixelWP := "/home/guenther/Projects/lethani/wallpapers/pixel.jpg"
 
     for e := range events {
         switch e.Type {
@@ -36,20 +37,24 @@ func main() {
 
             if e.KeyPress() {
                 counter.Incr(1)
-                apm = float64(counter.Rate()) * 5
+                apm = float64(counter.Rate()) * 6
 
-                if ( apm < 120 ) {
-                    logrus.Println("All good", apm)
-                    exec.Command("bash", "-c", wallpaperApp, argScale, wallpaper1).Output()
-
-                    //out, err := exec.Command("/bin/sh", "-c", "echo", "wp1").Output()
-                    //output := string(out[:])
-                    //logrus.Println(output)
-                    //logrus.Println(out, err)
-
+                if ( apm < 135 ) {
+                    exec.Command(wallpaperApp, argCenter, argOneScreen, argColor, "#005F73", pixelWP).Output()
+                } else if ( apm < 145 ) {
+                    exec.Command(wallpaperApp, argCenter, argOneScreen, argColor, "#0A9396", pixelWP).Output()
+                } else if ( apm < 155 ) {
+                    exec.Command(wallpaperApp, argCenter, argOneScreen, argColor, "#94D2BD", pixelWP).Output()
+                } else if ( apm < 165 ) {
+                    exec.Command(wallpaperApp, argCenter, argOneScreen, argColor, "#EE9B00", pixelWP).Output()
+                } else if ( apm < 180 ) {
+                    exec.Command(wallpaperApp, argCenter, argOneScreen, argColor, "#CA6702", pixelWP).Output()
+                } else if ( apm < 200 ) {
+                    exec.Command(wallpaperApp, argCenter, argOneScreen, argColor, "#BB3E03", pixelWP).Output()
+                } else if ( apm < 220 ) {
+                    exec.Command(wallpaperApp, argCenter, argOneScreen, argColor, "#AE2012", pixelWP).Output()
                 } else {
-                    logrus.Println("Chill my dude <3", apm)
-                    exec.Command("bash", "-c", wallpaperApp, argScale, wallpaper2).Output()
+                    exec.Command(wallpaperApp, argCenter, argOneScreen, argColor, "#9B2226", pixelWP).Output()
                 }
             }
 
