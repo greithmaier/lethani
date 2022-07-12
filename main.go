@@ -45,7 +45,7 @@ func main() {
                 // TBD: show APM again
                 // TBD: more intelligent APM attribution!
 
-                if ( apm < 145 ) {
+                if ( apm < 140 ) {
                     exec.Command(wallpaperApp, argCenter, argOneScreen, argColor, "#005F73", pixelWP).Output()
                 } else if ( apm < 160 ) {
                     exec.Command(wallpaperApp, argCenter, argOneScreen, argColor, "#0A9396", pixelWP).Output()
