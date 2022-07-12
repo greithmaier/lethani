@@ -23,7 +23,7 @@ func main() {
     var apm float64
 
     events := k.Read()
-    counter := ratecounter.NewRateCounter(10 * time.Second)
+    counter := ratecounter.NewRateCounter(30 * time.Second)
     wallpaperApp := "feh"
     argCenter := "--bg-center"
     argOneScreen := "--no-xinerama"
@@ -37,21 +37,27 @@ func main() {
 
             if e.KeyPress() {
                 counter.Incr(1)
-                apm = float64(counter.Rate()) * 6
+                logrus.Println("30s-counterRate * 2 = ", counter.Rate() * 2)
+                apm = float64(counter.Rate()) * 2
 
-                if ( apm < 135 ) {
+                // TBD: refactor into a very nice array
+                // TBD: add mouse action tracking
+                // TBD: show APM again
+                // TBD: more intelligent APM attribution!
+
+                if ( apm < 145 ) {
                     exec.Command(wallpaperApp, argCenter, argOneScreen, argColor, "#005F73", pixelWP).Output()
-                } else if ( apm < 145 ) {
+                } else if ( apm < 160 ) {
                     exec.Command(wallpaperApp, argCenter, argOneScreen, argColor, "#0A9396", pixelWP).Output()
-                } else if ( apm < 155 ) {
-                    exec.Command(wallpaperApp, argCenter, argOneScreen, argColor, "#94D2BD", pixelWP).Output()
-                } else if ( apm < 165 ) {
-                    exec.Command(wallpaperApp, argCenter, argOneScreen, argColor, "#EE9B00", pixelWP).Output()
                 } else if ( apm < 180 ) {
-                    exec.Command(wallpaperApp, argCenter, argOneScreen, argColor, "#CA6702", pixelWP).Output()
+                    exec.Command(wallpaperApp, argCenter, argOneScreen, argColor, "#94D2BD", pixelWP).Output()
                 } else if ( apm < 200 ) {
-                    exec.Command(wallpaperApp, argCenter, argOneScreen, argColor, "#BB3E03", pixelWP).Output()
+                    exec.Command(wallpaperApp, argCenter, argOneScreen, argColor, "#EE9B00", pixelWP).Output()
                 } else if ( apm < 220 ) {
+                    exec.Command(wallpaperApp, argCenter, argOneScreen, argColor, "#CA6702", pixelWP).Output()
+                } else if ( apm < 240 ) {
+                    exec.Command(wallpaperApp, argCenter, argOneScreen, argColor, "#BB3E03", pixelWP).Output()
+                } else if ( apm < 260 ) {
                     exec.Command(wallpaperApp, argCenter, argOneScreen, argColor, "#AE2012", pixelWP).Output()
                 } else {
                     exec.Command(wallpaperApp, argCenter, argOneScreen, argColor, "#9B2226", pixelWP).Output()
