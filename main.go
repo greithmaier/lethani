@@ -20,7 +20,7 @@ func main() {
     }
     defer k.Close()
 
-    var apm float64
+    var currentApm float64
 
     events := k.Read()
     counter := ratecounter.NewRateCounter(60 * time.Second)
@@ -29,6 +29,9 @@ func main() {
     argOneScreen := "--no-xinerama"
     argColor := "--image-bg"
     pixelWP := "/home/guenther/Projects/lethani/wallpapers/pixel.jpg"
+    // cannot use map, as map iteration is in random order
+    apms := []float64{100, 115, 130, 150, 180, 220, 250, 300}
+    colors := []string{"#005F73", "#0A9396", "#94D2BD", "#EE9B00", "#CA6702", "#BB3E03", "#AE2012", "#9B2226"}
 
     for e := range events {
         switch e.Type {
@@ -38,30 +41,13 @@ func main() {
             if e.KeyPress() {
                 counter.Incr(1)
                 logrus.Println("60s-counterRate = ", counter.Rate())
-                apm = float64(counter.Rate())
+                currentApm = float64(counter.Rate())
 
-                // TBD: refactor into a very nice array
-
-                // TBD: add mouse action tracking
-
-                // TBD: more intelligent APM attribution?! (mean & stddev on the fly? FFT?)
-
-                if ( apm < 100 ) {
-                    exec.Command(wallpaperApp, argCenter, argOneScreen, argColor, "#005F73", pixelWP).Output()
-                } else if ( apm < 115 ) {
-                    exec.Command(wallpaperApp, argCenter, argOneScreen, argColor, "#0A9396", pixelWP).Output()
-                } else if ( apm < 130 ) {
-                    exec.Command(wallpaperApp, argCenter, argOneScreen, argColor, "#94D2BD", pixelWP).Output()
-                } else if ( apm < 150 ) {
-                    exec.Command(wallpaperApp, argCenter, argOneScreen, argColor, "#EE9B00", pixelWP).Output()
-                } else if ( apm < 180 ) {
-                    exec.Command(wallpaperApp, argCenter, argOneScreen, argColor, "#CA6702", pixelWP).Output()
-                } else if ( apm < 220 ) {
-                    exec.Command(wallpaperApp, argCenter, argOneScreen, argColor, "#BB3E03", pixelWP).Output()
-                } else if ( apm < 250 ) {
-                    exec.Command(wallpaperApp, argCenter, argOneScreen, argColor, "#AE2012", pixelWP).Output()
-                } else {
-                    exec.Command(wallpaperApp, argCenter, argOneScreen, argColor, "#9B2226", pixelWP).Output()
+                for i, apm := range apms {
+                    if ( currentApm < apm ) {
+                        exec.Command(wallpaperApp, argCenter, argOneScreen, argColor, colors[i], pixelWP).Output()
+                        break
+                    }
                 }
             }
 
